@@ -31,10 +31,13 @@
         button:hover {
             background-color: #218838;
         }
-        .result {
+        .result, .loading {
             margin-top: 20px;
             font-size: 1.2em;
             color: #333;
+        }
+        .loading {
+            display: none;
         }
     </style>
 </head>
@@ -45,15 +48,25 @@
         <br>
         <button type="submit">Check</button>
     </form>
+    <div class="loading" id="loading">Processing...</div>
     <div class="result" id="result"></div>
     <script>
         document.getElementById('emailForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').innerText = '';
+
             const response = await fetch('/predict', {
                 method: 'POST',
                 body: formData
             });
+
+            // Hide loading indicator
+            document.getElementById('loading').style.display = 'none';
+
             const result = await response.json();
             document.getElementById('result').innerText = 'Result: ' + result.result;
         });
